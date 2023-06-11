@@ -1,26 +1,32 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    User list
+    Data list
 {% endblock %}
 
 {% block body %}
-    <h1 class="fs-2">User list</h1>
+    <h1 class="fs-2">Data list</h1>
     <div>
         <table class="table table-hover">
             <thead>
                 <tr>
                     <th scope="col">ID User</th>
                     <th scope="col">Username</th>
-                    <th scope="col">UUID</th>
+                    <th scope="col">UUID User</th>
+                    <th scope="col">ID Audiorecord</th>
+                    <th scope="col">Filname</th>
+                    <th scope="col">UUID Audiorecord</th>
                 </tr>
             </thead>
-            {% for user in users %}
+            {% for audiorecord in audiorecords %}
             <tbody>
                 <tr>
-                    <td>{{ user.id_user }}</td>      
-                    <td>{{ user.username }}</td>
-                    <td>{{ user.user_token }}</td> 
+                    <td>{{ audiorecord.user.id_user }}</td>      
+                    <td>{{ audiorecord.user.username }}</td>
+                    <td>{{ audiorecord.user.user_token }}</td>
+                    <td>{{ audiorecord.id_record }}</td>      
+                    <td>{{ audiorecord.filename }}</td>
+                    <td>{{ audiorecord.record_uuid }}</td> 
                 </tr>
             </tbody>
             {% endfor %}

@@ -1,7 +1,5 @@
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify, make_response, send_file, request
 from sqlalchemy.exc import IntegrityError
-import uuid
-import base64
 from io import BytesIO
 from pydub import AudioSegment
 
@@ -17,7 +15,7 @@ def registration():
     
     session = Session()
     
-    user = session.query(User).filter(User.username == username).first()
+    user = session.query(User).filter_by(username=username).first()
     if user:
         return jsonify({"error": "User with this name already exists"})
 
@@ -41,9 +39,18 @@ def registration():
 def upload_audiorecord():
     id_user = request.form.get('id_user')
     user_token = request.form.get('user_token')
-    file_wav = request.files.get('audiorecord')
+    file_wav = request.files.get('file_wav')
     
     session = Session()
+    
+    user = session.query(User).filter_by(user_token=user_token, id_user=id_user).first()
+    if user is None:
+        return jsonify({"error": "Permission denied"})
+    
+    if not file_wav.filename.lower().endswith('.wav'):
+        return jsonify({"error": "Invalid audio format"})
+    
+    filename = file_wav.filename.rsplit('.', 1)[0]
     
     audio = AudioSegment.from_file(file_wav, format='wav')
     
@@ -53,7 +60,8 @@ def upload_audiorecord():
     mp3_bytes = mp3_data.read()
     
     new_audiorecord = AudioRecord(
-        id_user=id_user, 
+        id_user=id_user,
+        filename=filename,
         file_data=mp3_bytes,
     )
     session.add(new_audiorecord)
@@ -67,5 +75,26 @@ def upload_audiorecord():
     
     return jsonify({
         'URL for download': 
-            f"http://127.0.0.1:5000/api/download?id={new_audiorecord.id_record}&user={new_audiorecord.id_user}"
+            f"http://127.0.0.1:5000/api/download?id_record={new_audiorecord.id_record}&id_user={new_audiorecord.id_user}"
     })
+    
+@api_app.route('/download', methods=['GET']) 
+def download():
+    id_record = request.args.get('id_record')
+    id_user = request.args.get('id_user')
+    
+    session = Session()
+    
+    file_mp3 = session.query(AudioRecord).filter_by(id_record=id_record, id_user=id_user).first()
+    if file_mp3 is None:
+        return jsonify({"error": "Audiorecord not found"})
+    
+    file_data = file_mp3.file_data
+    filename = f"{file_mp3.filename}.mp3"
+    
+    response = make_response(send_file(BytesIO(file_data), mimetype='audio/mpeg'))
+    response.headers['Content-Disposition'] = 'attachment; filename=' + filename
+    
+    session.close()
+
+    return response

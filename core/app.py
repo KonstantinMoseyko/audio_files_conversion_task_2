@@ -13,5 +13,5 @@ def index():
     return render_template("index.html")
 
 # bluprints registration
-app.register_blueprint(audio_app, url_prefix="/users")
+app.register_blueprint(audio_app, url_prefix="/data_list")
 app.register_blueprint(api_app, url_prefix="/api")
