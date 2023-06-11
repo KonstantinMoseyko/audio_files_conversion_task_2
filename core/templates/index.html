@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Home
+{% endblock %}
+
+{% block body %}
+<h1 class="fs-2">
+    Web service "Audio files conversion"
+</h1>
+<p class="fs-3"> Веб-сервис реализован на Python3 (Flask), выполняющий следующие функции:</p>
+<p>Создание пользователя, POST:</p>
+<ol class="list-group list-group-numbered">
+    <li class="list-group-item">Принимает на вход запросы с именем пользователя;</li>
+    <li class="list-group-item">Создаёт в базе данных пользователя заданным именем, так же генерирует уникальный идентификатор пользователя и UUID токен доступа (в виде строки) для данного пользователя;</li>
+    <li class="list-group-item">Возвращает сгенерированные идентификатор пользователя и токен.</li>
+</ol>
+<p>Добавление аудиозаписи, POST:</p>
+<ol class="list-group list-group-numbered">
+    <li class="list-group-item">Принимает на вход запросы, содержащие уникальный идентификатор пользователя, токен доступа и аудиозапись в формате wav;</li>
+    <li class="list-group-item">Преобразует аудиозапись в формат mp3, генерирует для неё уникальный UUID идентификатор и сохраняет их в базе данных;</li>
+    <li class="list-group-item">Возвращает URL для скачивания записи вида http://host:port/record?id=id_записи&user=id_пользователя.</li>
+</ol>
+<p>Доступ к аудиозаписи, GET:</p>
+<ol class="list-group list-group-numbered">
+    <li class="list-group-item">Предоставляет возможность скачать аудиозапись по ссылке</li>
+</ol>
+{% endblock %}
