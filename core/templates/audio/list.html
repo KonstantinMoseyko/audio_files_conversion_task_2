@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Data list
+{% endblock %}
+
+{% block body %}
+    <h1 class="fs-2">Data list</h1>
+    <div>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">ID User</th>
+                    <th scope="col">Username</th>
+                    <th scope="col">UUID User</th>
+                    <th scope="col">ID Audiorecord</th>
+                    <th scope="col">Filname</th>
+                    <th scope="col">UUID Audiorecord</th>
+                </tr>
+            </thead>
+            {% for audiorecord in audiorecords %}
+            <tbody>
+                <tr>
+                    <td>{{ audiorecord.user.id_user }}</td>      
+                    <td>{{ audiorecord.user.username }}</td>
+                    <td>{{ audiorecord.user.user_token }}</td>
+                    <td>{{ audiorecord.id_record }}</td>      
+                    <td>{{ audiorecord.filename }}</td>
+                    <td>{{ audiorecord.record_uuid }}</td> 
+                </tr>
+            </tbody>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}
